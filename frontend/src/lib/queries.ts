@@ -41,6 +41,16 @@ export function useToday() {
   return useQuery({ queryKey: ["today"], queryFn: () => api.get<TodayResponse>("/api/sessions/today") });
 }
 
+export function useDay(dateIso: string, todayIso: string) {
+  // The current day shares the ["today"] cache key so logging/readiness updates it directly.
+  const isToday = dateIso === todayIso;
+  return useQuery({
+    queryKey: isToday ? ["today"] : ["day", dateIso],
+    queryFn: () =>
+      api.get<TodayResponse>(isToday ? "/api/sessions/today" : `/api/sessions/day/${dateIso}`),
+  });
+}
+
 export function useRoutine() {
   return useQuery({ queryKey: ["routine"], queryFn: () => api.get<Routine>("/api/routine/current") });
 }

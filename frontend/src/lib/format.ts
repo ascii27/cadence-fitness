@@ -33,6 +33,32 @@ export function weekdayLong(iso: string): string {
   return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: "long" });
 }
 
+function localDate(iso: string): Date {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+export function isoAddDays(iso: string, n: number): string {
+  const d = localDate(iso);
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+export function dayDiffFromToday(iso: string): number {
+  const a = localDate(iso).getTime();
+  const b = localDate(todayISO()).getTime();
+  return Math.round((a - b) / (24 * 60 * 60 * 1000));
+}
+
+/** "Today" / "Tomorrow" / "Yesterday", else the weekday name. */
+export function relativeDayWord(iso: string): string {
+  const diff = dayDiffFromToday(iso);
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Tomorrow";
+  if (diff === -1) return "Yesterday";
+  return weekdayLong(iso);
+}
+
 export function withinEditWindow(loggedAt: string): boolean {
   const ts = new Date(loggedAt.endsWith("Z") ? loggedAt : loggedAt + "Z").getTime();
   return Date.now() - ts <= 24 * 60 * 60 * 1000;

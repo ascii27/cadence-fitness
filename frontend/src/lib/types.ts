@@ -43,12 +43,15 @@ export interface SessionLog {
   routine_version: number | null;
 }
 
+export type Relativity = "past" | "today" | "future";
+
 export interface TodayResponse {
   session_date: string;
   session: DerivedSession;
   log: SessionLog | null;
   readiness_answered: boolean;
   streak: number;
+  relativity: Relativity;
 }
 
 export interface RoutineDay {

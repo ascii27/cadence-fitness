@@ -49,9 +49,8 @@ def _current_streak(db: Session) -> int:
     )
 
 
-@router.get("/today", response_model=TodayOut)
-async def today(_: str = Depends(require_user), db: Session = Depends(get_db)) -> TodayOut:
-    d = today_date()
+def _build_day(db: Session, d) -> TodayOut:
+    """Derive the session for an arbitrary date, with its log if one exists."""
     date_str = d.isoformat()
     dow = day_of_week_for(d)
     routine = get_current_routine(db)
@@ -61,13 +60,35 @@ async def today(_: str = Depends(require_user), db: Session = Depends(get_db)) -
     log_out = None
     if existing and existing.status is not None:
         log_out = SessionLogOut.model_validate(existing)
+
+    today = today_date()
+    relativity = "today" if d == today else ("past" if d < today else "future")
     return TodayOut(
         session_date=date_str,
         session=session,
         log=log_out,
         readiness_answered=readiness is not None,
         streak=_current_streak(db),
+        relativity=relativity,
     )
+
+
+@router.get("/today", response_model=TodayOut)
+async def today(_: str = Depends(require_user), db: Session = Depends(get_db)) -> TodayOut:
+    return _build_day(db, today_date())
+
+
+@router.get("/day/{date_str}", response_model=TodayOut)
+async def day(
+    date_str: str,
+    _: str = Depends(require_user),
+    db: Session = Depends(get_db),
+) -> TodayOut:
+    try:
+        d = _parse(date_str)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date (expected YYYY-MM-DD)")
+    return _build_day(db, d)
 
 
 @router.post("/readiness", response_model=TodayOut)
