@@ -33,7 +33,7 @@ scp "$ROOT/deploy/cadence.service" "$VM:/tmp/cadence.service"
 ssh "$VM" "sudo mv /tmp/cadence.service /etc/systemd/system/cadence.service && \
   sudo systemctl daemon-reload && \
   sudo systemctl enable cadence.service >/dev/null 2>&1 || true && \
-  cd $REMOTE_DIR && /home/exedev/.local/bin/uv sync --quiet && \
+  cd $REMOTE_DIR && /usr/local/bin/uv sync --quiet && \
   sudo systemctl restart cadence.service"
 
 echo "==> Waiting for health"
