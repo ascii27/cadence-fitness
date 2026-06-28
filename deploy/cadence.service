@@ -1,0 +1,16 @@
+[Unit]
+Description=Cadence fitness engine (FastAPI)
+After=network.target
+
+[Service]
+Type=simple
+User=exedev
+WorkingDirectory=/home/exedev/cadence
+EnvironmentFile=/home/exedev/cadence/.env
+# uv resolves the venv from pyproject.toml on first run.
+ExecStart=/usr/local/bin/uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
