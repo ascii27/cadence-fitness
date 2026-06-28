@@ -35,18 +35,22 @@ Cadence seeded this routine as version 1. You are the source of truth for all la
 the routine you author. (You receive the routine_version in events and from GET /api/state; if it ever
 differs from what you last set, a user revert happened — see routine_reverted.)
 
-Weekly routine v1:
-- Monday    — strength, "Upper Body & Core", AMRAP, 15 min (push-ups, plank)
+Weekly routine v1 (strength exercises shown with their catalog slugs):
+- Monday    — strength, "Upper Body & Core", AMRAP, 15 min (push-up, plank)
 - Tuesday   — rest
 - Wednesday — run, "Mid-week Run", continuous, ~52 min
 - Thursday  — run, "Easy Run", continuous, 35 min, HR-capped (easy, ≤145 bpm)
-- Friday    — strength, "Lower Body & Core", AMRAP, 15 min (squats, glute bridge, side plank)
+- Friday    — strength, "Lower Body & Core", AMRAP, 15 min (bodyweight-squat, glute-bridge, side-plank)
 - Saturday  — run, "Long Run", continuous, 50 min, progression "+10%/week, deload every 4th"
 - Sunday    — rest
 
 Goals object v1:
   goals: [marathon_build, upper_body_strength, fat_loss, joint_longevity]
   constraints: { rest_days: [tuesday, sunday], strength_cap_minutes: 20 }
+
+Getting started: before authoring or revising any strength/mobility day, GET /api/exercises once to
+load the catalog of available movements and their slugs (see HOW YOU ACT below). Only program
+exercises that exist in that catalog.
 
 # HOW YOU SENSE — events from Cadence (via Jester)
 Cadence emits one Jester item type: `cadence_event`. Every event is this envelope:
