@@ -11,10 +11,22 @@ export default function ExerciseList({ exercises }: Props) {
   const catalog = useExercises();
   const [selected, setSelected] = useState<CatalogExercise | null>(null);
 
-  const bySlug = useMemo(() => {
-    const m = new Map<string, CatalogExercise>();
-    for (const e of catalog.data ?? []) m.set(e.slug, e);
-    return m;
+  // Resolve a routine exercise to its catalog entry by slug, or by a normalized
+  // name match (so routines that predate slugs, or omit them, still link up).
+  const resolve = useMemo(() => {
+    const bySlug = new Map<string, CatalogExercise>();
+    const byNorm = new Map<string, CatalogExercise>();
+    const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+    for (const e of catalog.data ?? []) {
+      bySlug.set(e.slug, e);
+      byNorm.set(norm(e.slug), e);
+      byNorm.set(norm(e.name), e);
+    }
+    return (ex: Exercise): CatalogExercise | undefined => {
+      if (ex.slug && bySlug.has(ex.slug)) return bySlug.get(ex.slug);
+      const k = norm(ex.name);
+      return byNorm.get(k) ?? byNorm.get(k.replace(/s$/, "")) ?? undefined;
+    };
   }, [catalog.data]);
 
   if (exercises.length === 0) return null;
@@ -23,7 +35,7 @@ export default function ExerciseList({ exercises }: Props) {
     <>
       <ul className="divide-y divide-line border-y border-line">
         {exercises.map((ex, i) => {
-          const detail = ex.slug ? bySlug.get(ex.slug) : undefined;
+          const detail = resolve(ex);
           const sub = ex.note ?? (ex.reps ? `${ex.reps} reps` : "");
           const row = (
             <span className="flex items-center gap-3">

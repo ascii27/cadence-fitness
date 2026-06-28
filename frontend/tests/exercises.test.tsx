@@ -60,4 +60,11 @@ describe("ExerciseList", () => {
     expect(screen.getByText("Mystery move")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /how-to/i })).not.toBeInTheDocument();
   });
+
+  it("resolves by name when slug is missing (legacy routines)", async () => {
+    // "Push-ups" (plural, no slug) should still link to the "push-up" catalog entry.
+    renderWithCatalog([{ name: "Push-ups", reps: null, note: "max reps", slug: null }]);
+    await userEvent.click(screen.getByRole("button", { name: /how-to/i }));
+    expect(screen.getByText("Press back up.")).toBeInTheDocument();
+  });
 });

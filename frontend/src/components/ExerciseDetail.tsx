@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { CatalogExercise } from "../lib/types";
 import { titleCase } from "../lib/format";
 
@@ -24,7 +25,9 @@ export default function ExerciseDetail({ exercise, onClose }: Props) {
 
   if (!exercise) return null;
 
-  return (
+  // Portal to <body> so the fixed overlay escapes any transformed ancestor
+  // (card entrance animations create a containing block that would trap it).
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true">
       <button aria-label="Close" className="absolute inset-0 bg-ink/70 backdrop-blur-sm" onClick={onClose} />
       <div className="relative max-h-[88dvh] w-full max-w-xl overflow-y-auto rounded-t-3xl border border-line bg-surface p-6 pb-10 sm:rounded-3xl"
@@ -84,7 +87,8 @@ export default function ExerciseDetail({ exercise, onClose }: Props) {
           ))}
         </ul>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
