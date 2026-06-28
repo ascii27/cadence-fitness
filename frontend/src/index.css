@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+/* ---- Cadence design tokens: "athletic instrument" ---- */
+@theme {
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Hanken Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
+  --color-ink: #0b0b0d;
+  --color-ink-2: #101013;
+  --color-surface: #151519;
+  --color-surface-2: #1c1c22;
+  --color-line: #2a2a31;
+  --color-line-bright: #3a3a44;
+
+  --color-text: #f3f1ec;
+  --color-muted: #9b9aa3;
+  --color-faint: #6a6a73;
+
+  --color-ember: #ff5c38;
+  --color-ember-soft: #ff8a6a;
+  --color-go: #36d399;
+  --color-amber: #fbbf24;
+  --color-rose: #fb5c74;
+  --color-sky: #5cc7ff;
+
+  --radius-card: 1.25rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background-color: var(--color-ink);
+    background-image:
+      radial-gradient(120% 80% at 50% -10%, rgba(255, 92, 56, 0.10), transparent 55%),
+      radial-gradient(100% 60% at 100% 0%, rgba(92, 199, 255, 0.05), transparent 50%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Faint film-grain overlay for instrument texture. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: var(--color-ember);
+    color: #1a0a05;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-ember);
+    outline-offset: 2px;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 99px; }
+}
+
+@layer utilities {
+  .tnum { font-variant-numeric: tabular-nums; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.66rem;
+  }
+  .card {
+    background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-ink-2) 100%);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+  .stagger > * { opacity: 0; animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+  .stagger > *:nth-child(1) { animation-delay: 0.02s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.08s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.14s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.20s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.26s; }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(255, 92, 56, 0.45); }
+  70% { box-shadow: 0 0 0 12px rgba(255, 92, 56, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 92, 56, 0); }
+}
