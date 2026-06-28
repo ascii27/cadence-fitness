@@ -18,3 +18,8 @@ backend/static/
 
 # OS
 .DS_Store
+
+# Stray browser screenshots
+/signin.png
+/today.png
+.playwright-mcp/
