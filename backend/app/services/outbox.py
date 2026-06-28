@@ -19,6 +19,10 @@ from . import jester
 
 log = logging.getLogger("cadence.outbox")
 
+# All Cadence events are delivered to Jester as a single item type; the specific
+# kind (workout_logged | milestone | routine_reverted) is carried in the envelope.
+JESTER_ITEM_TYPE = "cadence_event"
+
 MAX_ATTEMPTS = 5
 DRAIN_INTERVAL_SECONDS = 60
 _BACKOFF_BASE_SECONDS = 30  # 30s, 60s, 120s, 240s, ...
@@ -89,7 +93,12 @@ async def drain_once(db: Session, settings: Settings) -> int:
         if event.next_attempt_at is not None and event.next_attempt_at > now:
             continue
         try:
-            await jester.send_event(settings, event.event_type, event.payload)
+            envelope = {
+                "event_type": event.event_type,
+                "occurred_at": (event.created_at or utcnow()).isoformat(),
+                "data": event.payload,
+            }
+            await jester.send_event(settings, JESTER_ITEM_TYPE, envelope)
             event.status = "sent"
             event.sent_at = utcnow()
             event.last_error = None

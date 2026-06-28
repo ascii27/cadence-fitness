@@ -35,7 +35,13 @@ async def test_drain_success(monkeypatch):
         assert ev.sent_at is not None
     finally:
         db.close()
-    assert sent and sent[0][0] == "workout_logged"
+    # Single Jester item type; the kind rides in the envelope.
+    assert sent
+    item_type, body = sent[0]
+    assert item_type == "cadence_event"
+    assert body["event_type"] == "workout_logged"
+    assert body["data"] == {"hello": "world"}
+    assert "occurred_at" in body
 
 
 async def test_drain_failure_retries(monkeypatch):

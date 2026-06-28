@@ -235,12 +235,23 @@ Schema created on startup via `create_all` (no Alembic in v1).
 
 ---
 
-## 9. Jester Event Contracts (for registration)
+## 9. Jester Event Contract (for registration)
 
-`POST {JESTER_BASE_URL}/api/item/{event_type}` with `Authorization: Bearer {JESTER_WRITE_KEY}`,
-`Content-Type: application/json`. Item types and payload shapes to register in Jester:
+**One** Jester item type: **`cadence_event`**. Every event is the same envelope; the specific kind
+is carried in `event_type` and the kind-specific fields in `data`.
 
-### `workout_logged`
+`POST {JESTER_BASE_URL}/api/item/cadence_event` with `Authorization: Bearer {JESTER_WRITE_KEY}`,
+`Content-Type: application/json`.
+
+```json
+{
+  "event_type": "workout_logged | milestone | routine_reverted",
+  "occurred_at": "2026-06-28T17:22:00.123456",
+  "data": { /* kind-specific, see below */ }
+}
+```
+
+`data` for **`workout_logged`** (fires on every saved log):
 ```json
 {
   "log_id": "8f3c…uuid",
@@ -255,35 +266,22 @@ Schema created on startup via `create_all` (no Alembic in v1).
   "readiness": "great | tired | joint_pain | null",
   "swap_reason": "joint_pain | tired | null",
   "routine_version": 3,
-  "health_metrics": {
-    "avg_hr_bpm": null,
-    "max_hr_bpm": null,
-    "active_energy_kcal": null,
-    "hrv_ms": null
-  }
+  "health_metrics": { "avg_hr_bpm": null, "max_hr_bpm": null, "active_energy_kcal": null, "hrv_ms": null }
 }
 ```
 
-### `milestone`
+`data` for **`milestone`** (fires at streak = 7, 14, 30):
 ```json
-{
-  "milestone_type": "streak",
-  "streak_days": 7,
-  "session_date": "2026-06-28",
-  "log_id": "8f3c…uuid"
-}
+{ "milestone_type": "streak", "streak_days": 7, "session_date": "2026-06-28", "log_id": "8f3c…uuid" }
 ```
 
-### `routine_reverted`
+`data` for **`routine_reverted`** (fires on Revert of an Eva update):
 ```json
-{
-  "from_version": 4,
-  "to_version": 3,
-  "reverted_at": "2026-06-28T17:22:00Z"
-}
+{ "from_version": 4, "to_version": 3, "reverted_at": "2026-06-28T17:22:00.123456" }
 ```
 
-(`milestone` fires at streak = 7, 14, 30. `health_metrics` are null in Phase 1, populated in Phase 2.)
+(`health_metrics` are null in Phase 1, populated in Phase 2. The item type name is the constant
+`JESTER_ITEM_TYPE` in `backend/app/services/outbox.py`.)
 
 ---
 
@@ -322,8 +320,8 @@ PUBLIC_BASE_URL=https://cadence-fitness.exe.xyz
 
 1. **Google OAuth client** (Web): redirect URI `https://cadence-fitness.exe.xyz/api/auth/google/callback`
    → `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`.
-2. **Jester:** `JESTER_BASE_URL` and `JESTER_WRITE_KEY`; register item types `workout_logged`,
-   `milestone`, `routine_reverted` using the §9 contracts.
+2. **Jester:** `JESTER_BASE_URL` and `JESTER_WRITE_KEY`; register the single item type
+   `cadence_event` using the §9 envelope contract.
 3. (Already done) VM `cadence-fitness` exists and proxy is **public**.
 
 `EVA_APP_KEY` and `SESSION_SECRET` are generated above; hand `EVA_APP_KEY` to Eva.
