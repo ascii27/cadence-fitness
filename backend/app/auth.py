@@ -56,6 +56,17 @@ def require_eva(request: Request, settings: Settings = Depends(get_settings)) ->
     return True
 
 
+def require_user_or_eva(request: Request, settings: Settings = Depends(get_settings)) -> str:
+    """Allow either a signed-in web user or Eva (for shared read-only resources)."""
+    email = request.session.get("email")
+    if email:
+        return email
+    auth = request.headers.get("authorization", "")
+    if settings.eva_app_key and auth == f"Bearer {settings.eva_app_key}":
+        return "eva"
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+
+
 # ---- Routes ----
 @router.get("/login")
 async def login(request: Request, settings: Settings = Depends(get_settings)):

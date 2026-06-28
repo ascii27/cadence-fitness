@@ -8,6 +8,7 @@ import { api, UnauthorizedError } from "./api";
 import * as queue from "./offlineQueue";
 import type {
   Adherence,
+  CatalogExercise,
   Goals,
   LogCreate,
   LogSaveResult,
@@ -57,6 +58,14 @@ export function useRoutine() {
 
 export function useGoals() {
   return useQuery({ queryKey: ["goals"], queryFn: () => api.get<Goals>("/api/goals") });
+}
+
+export function useExercises() {
+  return useQuery({
+    queryKey: ["exercises"],
+    queryFn: () => api.get<CatalogExercise[]>("/api/exercises"),
+    staleTime: 60 * 60 * 1000, // catalog is effectively static
+  });
 }
 
 export function useAdherence() {
