@@ -12,6 +12,22 @@ class Exercise(BaseModel):
     name: str
     reps: Optional[int] = None
     note: Optional[str] = None
+    slug: Optional[str] = None  # references a catalog exercise (app shows its visual + instructions)
+
+
+# ---- Exercise catalog ----
+class CatalogExercise(BaseModel):
+    slug: str
+    name: str
+    category: str
+    target: list[str]
+    difficulty: str
+    low_impact: bool
+    equipment: str = "none"
+    unit: str
+    instructions: list[str]
+    cues: list[str]
+    image: str  # path to the SVG visual, e.g. /exercises/push-up.svg
 
 
 class RoutineDay(BaseModel):

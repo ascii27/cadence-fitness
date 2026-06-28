@@ -17,6 +17,9 @@ data, tuned over time by a remote agent (**Eva**, on Hermes); adherence is strea
 - **After a session** — manual logging (status, duration, AMRAP rounds, 1–5 rating, notes); editable
   within 24h; any past date can be logged.
 - **Over time** — adherence streaks, a 12-week calendar heatmap, weekly summaries.
+- **Exercise library** — a curated set of ~33 no-equipment movements with instructions, form cues,
+  and a minimalist figure illustration each. Eva selects from this catalog (by `slug`); the app shows
+  the visual + how-to when you tap an exercise, and a browsable library lives at `/exercises`.
 - **Integrations** — Eva replaces the routine / updates goals via an authenticated API; every log
   emits a `workout_logged` event to Jester (plus `milestone` and `routine_reverted`).
 - **Offline-first logging** — log submissions are queued in IndexedDB and synced on reconnect; a
@@ -159,6 +162,7 @@ All app endpoints require a signed-in session except `/api/health` (open) and th
 | GET | `/api/routine/current` · `/history` | session | active routine (+ Eva-banner flag) / versions |
 | POST | `/api/routine/revert` · `/acknowledge` | session | revert (≤7 days, emits `routine_reverted`) / dismiss banner |
 | GET | `/api/goals` | session | current goals + constraints |
+| GET | `/api/exercises` · `/{slug}` | session **or** Eva | exercise catalog (instructions, cues, visual) |
 | PUT | `/api/routine` | **Eva** | replace routine (new version + reason) |
 | PATCH | `/api/goals` | **Eva** | update goals / constraints |
 | GET | `/api/state` | **Eva** | catch-up summary: routine version, last log date, 30-day adherence |

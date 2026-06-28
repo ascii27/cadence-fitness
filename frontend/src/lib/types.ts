@@ -6,6 +6,21 @@ export interface Exercise {
   name: string;
   reps: number | null;
   note: string | null;
+  slug?: string | null;
+}
+
+export interface CatalogExercise {
+  slug: string;
+  name: string;
+  category: string;
+  target: string[];
+  difficulty: string;
+  low_impact: boolean;
+  equipment: string;
+  unit: string;
+  instructions: string[];
+  cues: string[];
+  image: string;
 }
 
 export interface DerivedSession {

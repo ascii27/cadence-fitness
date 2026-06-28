@@ -7,6 +7,7 @@ import TodayPage from "./pages/TodayPage";
 import LogPage from "./pages/LogPage";
 import HistoryPage from "./pages/HistoryPage";
 import GoalsPage from "./pages/GoalsPage";
+import ExercisesPage from "./pages/ExercisesPage";
 import SettingsPage from "./pages/SettingsPage";
 
 const NAV = [
@@ -55,6 +56,7 @@ export default function App() {
           <Route path="/log" element={<LogPage />} />
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/goals" element={<GoalsPage />} />
+          <Route path="/exercises" element={<ExercisesPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </main>

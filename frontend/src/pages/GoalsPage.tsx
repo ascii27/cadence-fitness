@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useGoals, useRoutine } from "../lib/queries";
 import { humanGoal, titleCase } from "../lib/format";
 import TypeBadge from "../components/TypeBadge";
@@ -48,6 +49,17 @@ export default function GoalsPage() {
           </div>
         </dl>
       </div>
+
+      <Link
+        to="/exercises"
+        className="card flex items-center justify-between p-5 transition hover:border-line-bright active:scale-[0.99]"
+      >
+        <span>
+          <span className="block font-medium">Exercise library</span>
+          <span className="text-sm text-faint">No-equipment movements Eva selects from — with how-tos</span>
+        </span>
+        <span className="text-ember">›</span>
+      </Link>
 
       {/* Weekly routine overview */}
       <div className="card p-5">

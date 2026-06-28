@@ -13,7 +13,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from . import auth
 from .config import get_settings
 from .db import SessionLocal, create_all
-from .routers import adherence, goals, health, routines, sessions, state
+from .routers import adherence, exercises, goals, health, routines, sessions, state
 from .services import outbox
 from .services.seed import ensure_seed
 
@@ -64,6 +64,7 @@ def create_app() -> FastAPI:
     app.include_router(sessions.router)
     app.include_router(adherence.router)
     app.include_router(state.router)
+    app.include_router(exercises.router)
 
     _mount_spa(app)
     return app

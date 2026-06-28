@@ -35,8 +35,8 @@ SEED_DAYS = [
         "modality": "amrap",
         "duration_minutes": 15,
         "exercises": [
-            {"name": "Push-ups", "reps": None, "note": "max reps per round"},
-            {"name": "Plank", "reps": None, "note": "30 sec hold"},
+            {"name": "Push-ups", "reps": None, "note": "max reps per round", "slug": "push-up"},
+            {"name": "Plank", "reps": None, "note": "30 sec hold", "slug": "plank"},
         ],
     },
     {
@@ -68,9 +68,9 @@ SEED_DAYS = [
         "modality": "amrap",
         "duration_minutes": 15,
         "exercises": [
-            {"name": "Bodyweight squats", "reps": None, "note": "max reps per round"},
-            {"name": "Glute bridge", "reps": None, "note": "max reps per round"},
-            {"name": "Side plank", "reps": None, "note": "30 sec each side"},
+            {"name": "Bodyweight squats", "reps": None, "note": "max reps per round", "slug": "bodyweight-squat"},
+            {"name": "Glute bridge", "reps": None, "note": "max reps per round", "slug": "glute-bridge"},
+            {"name": "Side plank", "reps": None, "note": "30 sec each side", "slug": "side-plank"},
         ],
     },
     {

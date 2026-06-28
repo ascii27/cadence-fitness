@@ -2,12 +2,22 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { ReactNode } from "react";
 import ReadinessCheck from "../src/components/ReadinessCheck";
 import SessionCard from "../src/components/SessionCard";
 import StarRating from "../src/components/StarRating";
 import DayNav from "../src/components/DayNav";
 import { isoAddDays, todayISO } from "../src/lib/format";
 import type { DerivedSession } from "../src/lib/types";
+
+function renderCard(ui: ReactNode) {
+  return render(
+    <QueryClientProvider client={new QueryClient()}>
+      <MemoryRouter>{ui}</MemoryRouter>
+    </QueryClientProvider>,
+  );
+}
 
 const baseSession: DerivedSession = {
   day_of_week: "monday",
@@ -36,11 +46,7 @@ describe("ReadinessCheck", () => {
 
 describe("SessionCard", () => {
   it("renders the session and a Log CTA when not logged", () => {
-    render(
-      <MemoryRouter>
-        <SessionCard session={baseSession} log={null} dateLabel="Monday" />
-      </MemoryRouter>,
-    );
+    renderCard(<SessionCard session={baseSession} log={null} dateLabel="Monday" />);
     expect(screen.getByText("Upper Body & Core")).toBeInTheDocument();
     expect(screen.getByText("Push-ups")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /log workout/i })).toBeInTheDocument();
@@ -54,11 +60,7 @@ describe("SessionCard", () => {
       swapped: true,
       swap_reason: "joint_pain",
     };
-    render(
-      <MemoryRouter>
-        <SessionCard session={swapped} log={null} dateLabel="Monday" />
-      </MemoryRouter>,
-    );
+    renderCard(<SessionCard session={swapped} log={null} dateLabel="Monday" />);
     expect(screen.getByText(/Swapped to mobility/i)).toBeInTheDocument();
   });
 });
@@ -74,21 +76,13 @@ describe("StarRating", () => {
 
 describe("SessionCard relativity", () => {
   it("shows an upcoming preview (no log CTA) for future days", () => {
-    render(
-      <MemoryRouter>
-        <SessionCard session={baseSession} log={null} dateLabel="Monday" relativity="future" />
-      </MemoryRouter>,
-    );
+    renderCard(<SessionCard session={baseSession} log={null} dateLabel="Monday" relativity="future" />);
     expect(screen.getByText(/Upcoming/i)).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /log/i })).not.toBeInTheDocument();
   });
 
   it("offers 'Log this day' for past days", () => {
-    render(
-      <MemoryRouter>
-        <SessionCard session={baseSession} log={null} dateLabel="Monday" relativity="past" logHref="/log?date=2026-06-01" />
-      </MemoryRouter>,
-    );
+    renderCard(<SessionCard session={baseSession} log={null} dateLabel="Monday" relativity="past" logHref="/log?date=2026-06-01" />);
     expect(screen.getByRole("link", { name: /log this day/i })).toBeInTheDocument();
   });
 });

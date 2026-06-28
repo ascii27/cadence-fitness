@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import type { DerivedSession, Relativity, SessionLog } from "../lib/types";
 import { STATUS_COLOR, titleCase } from "../lib/format";
 import TypeBadge from "./TypeBadge";
+import ExerciseList from "./ExerciseList";
 
 interface Props {
   session: DerivedSession;
@@ -63,14 +64,9 @@ export default function SessionCard({ session, log, dateLabel, relativity = "tod
 
       {/* Exercises (strength/mobility) */}
       {session.exercises.length > 0 && (
-        <ul className="mt-6 divide-y divide-line border-y border-line">
-          {session.exercises.map((ex, i) => (
-            <li key={i} className="flex items-center justify-between py-3">
-              <span className="font-medium">{ex.name}</span>
-              <span className="text-sm text-faint">{ex.note ?? (ex.reps ? `${ex.reps} reps` : "")}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-6">
+          <ExerciseList exercises={session.exercises} />
+        </div>
       )}
 
       {session.progression_rule && (
