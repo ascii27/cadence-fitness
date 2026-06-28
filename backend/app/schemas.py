@@ -108,6 +108,7 @@ class TodayOut(BaseModel):
     log: Optional[SessionLogOut] = None
     readiness_answered: bool = False
     streak: int = 0
+    relativity: Literal["past", "today", "future"] = "today"
 
 
 class ReadinessIn(BaseModel):

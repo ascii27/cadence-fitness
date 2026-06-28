@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { DerivedSession, SessionLog } from "../lib/types";
+import type { DerivedSession, Relativity, SessionLog } from "../lib/types";
 import { STATUS_COLOR, titleCase } from "../lib/format";
 import TypeBadge from "./TypeBadge";
 
@@ -7,10 +7,13 @@ interface Props {
   session: DerivedSession;
   log: SessionLog | null;
   dateLabel: string;
+  relativity?: Relativity;
+  logHref?: string;
 }
 
-export default function SessionCard({ session, log, dateLabel }: Props) {
+export default function SessionCard({ session, log, dateLabel, relativity = "today", logHref = "/log" }: Props) {
   const logged = log?.status != null;
+  const isFuture = relativity === "future";
 
   return (
     <div className="card relative overflow-hidden p-6">
@@ -88,16 +91,22 @@ export default function SessionCard({ session, log, dateLabel }: Props) {
                 <span className="tnum text-sm text-faint">· {log!.duration_minutes} min</span>
               )}
             </span>
-            <Link to="/log" className="eyebrow text-ember">
-              Edit
-            </Link>
+            {!isFuture && (
+              <Link to={logHref} className="eyebrow text-ember">
+                Edit
+              </Link>
+            )}
+          </div>
+        ) : isFuture ? (
+          <div className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-line px-4 py-3 text-faint">
+            <span className="eyebrow">Upcoming · preview</span>
           </div>
         ) : (
           <Link
-            to="/log"
+            to={logHref}
             className="flex min-h-[56px] items-center justify-center rounded-full bg-ember text-lg font-semibold text-ink transition-transform active:scale-[0.98]"
           >
-            Log Workout
+            {relativity === "today" ? "Log Workout" : "Log this day"}
           </Link>
         )}
       </div>
